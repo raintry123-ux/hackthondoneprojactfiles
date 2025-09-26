@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - College System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .dashboard-content {
+            padding: 40px;
+        }
+        
+        .user-info {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .user-info h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .info-item {
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .action-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #f0f0f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            border-color: #6a11cb;
+        }
+        
+        .action-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        
+        .logout-btn {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .logout-btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to Dashboard</h1>
+            <p>College Attendance System</p>
+        </div>
+        
+        <div class="dashboard-content">
+            <div class="user-info">
+                <h3>User Information</h3>
+                <div class="info-item">
+                    <strong>Email:</strong> <span id="userEmail">Loading...</span>
+                </div>
+                <div class="info-item">
+                    <strong>Login Time:</strong> <span id="loginTime">Loading...</span>
+                </div>
+                <div class="info-item">
+                    <strong>User ID:</strong> <span id="userId">Loading...</span>
+                </div>
+            </div>
+            
+            <div class="actions">
+                <div class="action-card" onclick="markAttendance()">
+                    <div class="action-icon">📅</div>
+                    <h3>Mark Attendance</h3>
+                    <p>Record your daily attendance</p>
+                </div>
+                
+                <div class="action-card" onclick="viewProfile()">
+                    <div class="action-icon">👤</div>
+                    <h3>View Profile</h3>
+                    <p>Check your personal information</p>
+                </div>
+                
+                <div class="action-card" onclick="viewRecords()">
+                    <div class="action-icon">📊</div>
+                    <h3>Attendance Records</h3>
+                    <p>View your attendance history</p>
+                </div>
+            </div>
+            
+            <center>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </center>
+        </div>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAn2MiKH9C3CXd_UBFvgy_8rxiENBsiJpc",
+            authDomain: "rainweblogin-pagedatabase.firebaseapp.com",
+            projectId: "rainweblogin-pagedatabase",
+            storageBucket: "rainweblogin-pagedatabase.firebasestorage.app",
+            messagingSenderId: "205913357514",
+            appId: "1:205913357514:web:d83813940596f85e3c4833",
+            measurementId: "G-1LZD8HGKDP"
+        };
+
+        // Initialize Firebase
+        let auth;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            auth = firebase.auth();
+        } catch (error) {
+            console.error('Firebase initialization error:', error);
+        }
+
+        // Check if user is logged in
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+        
+        if (!currentUser || !currentUser.email) {
+            // Redirect to login if not authenticated
+            window.location.href = 'index.html';
+        } else {
+            // Display user info
+            document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('loginTime').textContent = new Date(currentUser.loginTime).toLocaleString();
+            document.getElementById('userId').textContent = currentUser.uid || 'N/A';
+        }
+        
+        // Dashboard functions
+        function markAttendance() {
+            alert('Attendance marking system will open here!');
+        }
+        
+        function viewProfile() {
+            alert('Profile page will open here!');
+        }
+        
+        function viewRecords() {
+            alert('Attendance records will be displayed here!');
+        }
+        
+        function logout() {
+            // Clear local storage
+            localStorage.removeItem('currentUser');
+            
+            // Sign out from Firebase
+            if (auth) {
+                auth.signOut().then(() => {
+                    console.log("User signed out from Firebase");
+                });
+            }
+            
+            // Redirect to login page with logout parameter
+            window.location.href = 'index.html?logout=true';
+        }
+    </script>
+</body>
+</html>
