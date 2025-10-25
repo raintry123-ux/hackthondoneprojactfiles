@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - College System</title>
     <style>
+        /* All previous CSS remains exactly the same */
         * {
             margin: 0;
             padding: 0;
@@ -19,7 +20,7 @@
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
             background: white;
             border-radius: 15px;
@@ -34,13 +35,36 @@
             text-align: center;
         }
         
+        .header.admin-header {
+            background: linear-gradient(to right, #8b5cf6, #7c3aed);
+        }
+        
         .header h1 {
             font-size: 32px;
             margin-bottom: 10px;
         }
         
+        .user-role {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            margin-top: 10px;
+            display: inline-block;
+            font-weight: 600;
+        }
+        
         .dashboard-content {
-            padding: 40px;
+            padding: 30px;
+        }
+
+        /* Student Specific Styles */
+        .student-section {
+            display: block;
+        }
+        
+        .admin-section {
+            display: none;
         }
         
         .user-info {
@@ -82,15 +106,14 @@
             transition: all 0.3s ease;
         }
         
-        .attendance-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
         .attendance-btn:disabled {
             background: #9ca3af;
             cursor: not-allowed;
-            transform: none;
+        }
+        
+        .attendance-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         
         .attendance-status {
@@ -169,6 +192,62 @@
             margin-bottom: 15px;
         }
         
+        /* Admin Specific Styles */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .admin-stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #8b5cf6;
+            background: linear-gradient(135deg, #f0f4ff, #e0e7ff);
+        }
+        
+        .admin-stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #7c3aed;
+            margin-bottom: 10px;
+        }
+        
+        .admin-stat-label {
+            font-size: 16px;
+            color: #64748b;
+            font-weight: 600;
+        }
+        
+        .admin-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .student-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #8b5cf6;
+        }
+        
+        .search-box {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            width: 100%;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        /* Common Styles */
         .logout-btn {
             background: linear-gradient(to right, #ff416c, #ff4b2b);
             color: white;
@@ -197,11 +276,11 @@
         
         .modal-content {
             background: white;
-            margin: 5% auto;
+            margin: 2% auto;
             padding: 30px;
             border-radius: 15px;
-            max-width: 90%;
-            max-height: 85vh;
+            max-width: 95%;
+            max-height: 90vh;
             overflow-y: auto;
             position: relative;
         }
@@ -212,31 +291,9 @@
             top: 15px;
             font-size: 24px;
             cursor: pointer;
+            color: #666;
         }
         
-        .attendance-record {
-            background: white;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border-left: 4px solid #10b981;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-radius: 50%;
-            border-top-color: #3498db;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
         .calendar {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -267,14 +324,71 @@
             background: #e2e8f0;
         }
         
-        .admin-btn {
-            background: linear-gradient(to right, #8b5cf6, #7c3aed);
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-radius: 50%;
+            border-top-color: #3498db;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .location-status {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+
+        .location-allowed {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .location-denied {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .location-checking {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            margin: 20px 0;
+        }
+
+        .accuracy-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .retry-btn {
+            background: #3b82f6;
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 8px 16px;
             border-radius: 5px;
             cursor: pointer;
             margin-left: 10px;
+            font-size: 14px;
+        }
+
+        .retry-btn:hover {
+            background: #2563eb;
         }
     </style>
     
@@ -288,91 +402,150 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Welcome to Dashboard</h1>
-            <p>College Attendance System</p>
-            <button class="admin-btn" onclick="openAdminPanel()">Admin Panel</button>
+        <!-- Header will be dynamically set based on user role -->
+        <div class="header" id="pageHeader">
+            <h1 id="headerTitle">Welcome to Dashboard</h1>
+            <p id="headerSubtitle">College Attendance System</p>
+            <div class="user-role" id="userRole">Loading...</div>
         </div>
         
         <div class="dashboard-content">
-            <!-- User Information -->
-            <div class="user-info">
-                <h3>User Information</h3>
-                <div class="info-item">
-                    <strong>Email:</strong> <span id="userEmail">Loading...</span>
+            <!-- STUDENT SECTION -->
+            <div class="student-section" id="studentSection">
+                <!-- Student Information -->
+                <div class="user-info">
+                    <h3>Student Information</h3>
+                    <div class="info-item">
+                        <strong>Email:</strong> <span id="userEmail">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Full Name:</strong> <span id="userName">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Phone:</strong> <span id="userPhone">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>User ID:</strong> <span id="userId">Loading...</span>
+                    </div>
                 </div>
-                <div class="info-item">
-                    <strong>Full Name:</strong> <span id="userName">Loading...</span>
-                </div>
-                <div class="info-item">
-                    <strong>Phone:</strong> <span id="userPhone">Loading...</span>
-                </div>
-                <div class="info-item">
-                    <strong>User ID:</strong> <span id="userId">Loading...</span>
-                </div>
-            </div>
-            
-            <!-- Attendance Section -->
-            <div class="attendance-section">
-                <h3>Mark Your Attendance</h3>
-                <button class="attendance-btn" id="markAttendanceBtn" onclick="markAttendance()">
-                    Mark Today's Attendance
-                </button>
-                <div id="attendanceStatus" class="attendance-status"></div>
                 
-                <div id="todayAttendance" class="today-attendance" style="display: none;">
-                    <h4>Today's Attendance</h4>
-                    <p><strong>Time:</strong> <span id="attendanceTime"></span></p>
-                    <p><strong>Date:</strong> <span id="attendanceDate"></span></p>
-                    <p><strong>Status:</strong> <span style="color: green;">Present ✅</span></p>
-                </div>
-
-                <!-- Monthly Statistics -->
-                <div class="monthly-stats">
-                    <h4>📊 This Month's Attendance (Running Month)</h4>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-number" id="monthWorkingDays">0</div>
-                            <div class="stat-label">Working Days</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="monthPresent">0</div>
-                            <div class="stat-label">Present</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="monthAbsent">0</div>
-                            <div class="stat-label">Absent</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="monthPercentage">0%</div>
-                            <div class="stat-label">Percentage</div>
-                        </div>
+                <!-- Attendance Section -->
+                <div class="attendance-section">
+                    <h3>Mark Your Attendance</h3>
+                    
+                    <!-- Location Status -->
+                    <div id="locationStatus" class="location-status location-checking">
+                        <span id="locationText">Checking your location...</span>
+                        <button class="retry-btn" onclick="checkLocation()" id="retryBtn" style="display: none;">Retry</button>
+                        <div class="accuracy-info" id="accuracyInfo"></div>
                     </div>
                     
-                    <!-- Monthly Calendar View -->
-                    <div id="monthCalendar" style="margin-top: 20px;"></div>
+                    <button class="attendance-btn" id="markAttendanceBtn" onclick="markAttendance()" disabled>
+                        Mark Today's Attendance
+                    </button>
+                    <div id="attendanceStatus" class="attendance-status"></div>
+                    
+                    <div id="todayAttendance" class="today-attendance" style="display: none;">
+                        <h4>Today's Attendance</h4>
+                        <p><strong>Time:</strong> <span id="attendanceTime"></span></p>
+                        <p><strong>Date:</strong> <span id="attendanceDate"></span></p>
+                        <p><strong>Status:</strong> <span style="color: green;">Present ✅</span></p>
+                    </div>
+
+                    <!-- Monthly Statistics -->
+                    <div class="monthly-stats">
+                        <h4>📊 This Month's Attendance</h4>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number" id="monthWorkingDays">0</div>
+                                <div class="stat-label">Working Days</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="monthPresent">0</div>
+                                <div class="stat-label">Present</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="monthAbsent">0</div>
+                                <div class="stat-label">Absent</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="monthPercentage">0%</div>
+                                <div class="stat-label">Percentage</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Monthly Calendar View -->
+                        <div id="monthCalendar" style="margin-top: 20px;"></div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="actions">
+                    <div class="action-card" onclick="viewProfile()">
+                        <div class="action-icon">👤</div>
+                        <h3>View Profile</h3>
+                        <p>Check your personal information</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="viewAttendanceRecords()">
+                        <div class="action-icon">📊</div>
+                        <h3>Attendance Records</h3>
+                        <p>View your attendance history</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="viewDetailedStats()">
+                        <div class="action-icon">📈</div>
+                        <h3>Detailed Statistics</h3>
+                        <p>Charts and detailed analysis</p>
+                    </div>
                 </div>
             </div>
-            
-            <!-- Quick Actions -->
-            <div class="actions">
-                <div class="action-card" onclick="viewProfile()">
-                    <div class="action-icon">👤</div>
-                    <h3>View Profile</h3>
-                    <p>Check your personal information</p>
+
+            <!-- ADMIN SECTION -->
+            <div class="admin-section" id="adminSection">
+                <!-- Admin Statistics -->
+                <div class="admin-stats">
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-number" id="totalStudents">0</div>
+                        <div class="admin-stat-label">Total Students</div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-number" id="totalAttendance">0</div>
+                        <div class="admin-stat-label">Total Attendance</div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-number" id="todayAttendanceCount">0</div>
+                        <div class="admin-stat-label">Today's Attendance</div>
+                    </div>
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-number" id="activeUsers">0</div>
+                        <div class="admin-stat-label">Active Users</div>
+                    </div>
                 </div>
                 
-                <div class="action-card" onclick="viewAttendanceRecords()">
-                    <div class="action-icon">📊</div>
-                    <h3>Attendance Records</h3>
-                    <p>View your attendance history</p>
+                <!-- Quick Actions -->
+                <div class="admin-actions">
+                    <div class="action-card" onclick="viewAllStudents()">
+                        <div class="action-icon">👥</div>
+                        <h3>Manage Students</h3>
+                        <p>View and manage all students</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="viewAttendanceReport()">
+                        <div class="action-icon">📊</div>
+                        <h3>Attendance Reports</h3>
+                        <p>Detailed attendance analytics</p>
+                    </div>
+                    
+                    <div class="action-card" onclick="viewSystemStats()">
+                        <div class="action-icon">📈</div>
+                        <h3>System Statistics</h3>
+                        <p>Overall system performance</p>
+                    </div>
                 </div>
-                
-                <div class="action-card" onclick="viewDetailedStats()">
-                    <div class="action-icon">📈</div>
-                    <h3>Detailed Statistics</h3>
-                    <p>Charts and detailed analysis</p>
-                </div>
+
+                <!-- Students List -->
+                <div id="adminStudentsList" style="margin-top: 30px;"></div>
             </div>
             
             <center>
@@ -381,16 +554,15 @@
         </div>
     </div>
 
-    <!-- Profile Modal -->
+    <!-- Student Modals -->
     <div id="profileModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('profileModal')">&times;</span>
-            <h2>Your Profile</h2>
+            <h2>Student Profile</h2>
             <div id="profileInfo"></div>
         </div>
     </div>
 
-    <!-- Attendance Records Modal -->
     <div id="recordsModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('recordsModal')">&times;</span>
@@ -399,29 +571,23 @@
         </div>
     </div>
 
-    <!-- Statistics Modal -->
     <div id="statsModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('statsModal')">&times;</span>
-            <h2>Detailed Attendance Statistics</h2>
-            <div id="attendanceStats">
-                <canvas id="attendanceChart" width="400" height="200"></canvas>
+            <h2>Detailed Statistics</h2>
+            <div class="chart-container">
+                <canvas id="attendanceChart"></canvas>
             </div>
         </div>
     </div>
 
-    <!-- Admin Panel Modal -->
-    <div id="adminModal" class="modal">
+    <!-- Admin Modals -->
+    <div id="allStudentsModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal('adminModal')">&times;</span>
-            <h2>📊 Admin Panel - All Students Report</h2>
-            <div id="adminContent">
-                <div style="margin-bottom: 20px;">
-                    <input type="text" id="searchStudent" placeholder="Search students..." style="padding: 8px; width: 100%; margin-bottom: 10px;">
-                    <button onclick="loadAllStudents()" class="admin-btn">Refresh Data</button>
-                </div>
-                <div id="allStudentsData" style="max-height: 500px; overflow-y: auto;"></div>
-            </div>
+            <span class="close" onclick="closeModal('allStudentsModal')">&times;</span>
+            <h2>All Students</h2>
+            <input type="text" id="searchStudent" class="search-box" placeholder="Search students...">
+            <div id="allStudentsData"></div>
         </div>
     </div>
 
@@ -429,7 +595,7 @@
         // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAn2MiKH9C3CXd_UBFvgy_8rxiENBsiJpc",
-            authDomain: "rainweblogin-pagedatabase.firebaseapp.com",
+            authDomain: "rainweblogin-pagedatabase.firebasestorage.app",
             projectId: "rainweblogin-pagedatabase",
             storageBucket: "rainweblogin-pagedatabase.firebasestorage.app",
             messagingSenderId: "205913357514",
@@ -451,9 +617,18 @@
         let currentUser = null;
         let userData = null;
         let allAttendanceRecords = [];
+        let allUsers = [];
+        let allAttendance = [];
         let attendanceChart = null;
 
-        // Check if user is logged in and load data
+        // College location coordinates (Change these to your college coordinates)
+        const COLLEGE_LOCATION = {
+            latitude: 28.6129,  // Example: Delhi coordinates
+            longitude: 77.2295
+        };
+        const ALLOWED_RADIUS = 100; // 100 meters radius
+
+        // Check if user is logged in and load appropriate dashboard
         window.addEventListener('load', async function() {
             currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
             
@@ -462,6 +637,182 @@
                 return;
             }
 
+            // Set dashboard type based on admin status
+            if (currentUser.isAdmin) {
+                showAdminDashboard();
+                await loadAdminData();
+            } else {
+                showStudentDashboard();
+                await loadStudentData();
+                // Check location for students with better accuracy
+                checkLocation();
+            }
+        });
+
+        // Improved location checking with better accuracy
+        function checkLocation() {
+            const locationStatus = document.getElementById('locationStatus');
+            const locationText = document.getElementById('locationText');
+            const accuracyInfo = document.getElementById('accuracyInfo');
+            const markBtn = document.getElementById('markAttendanceBtn');
+            const retryBtn = document.getElementById('retryBtn');
+            
+            locationStatus.className = 'location-status location-checking';
+            locationText.textContent = 'Getting precise location...';
+            accuracyInfo.textContent = 'Using high accuracy GPS...';
+            retryBtn.style.display = 'none';
+            markBtn.disabled = true;
+
+            if (!navigator.geolocation) {
+                locationText.innerHTML = '❌ Geolocation is not supported by this browser.';
+                accuracyInfo.textContent = 'Please use a modern browser with GPS support.';
+                locationStatus.className = 'location-status location-denied';
+                retryBtn.style.display = 'inline-block';
+                return;
+            }
+
+            // First try: High accuracy with timeout
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    handleLocationSuccess(position);
+                },
+                function(error) {
+                    // If high accuracy fails, try with lower accuracy
+                    console.log('High accuracy failed, trying standard accuracy...');
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            handleLocationSuccess(position);
+                        },
+                        function(error) {
+                            handleLocationError(error);
+                        },
+                        {
+                            enableHighAccuracy: false,
+                            timeout: 15000,
+                            maximumAge: 60000
+                        }
+                    );
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+
+        function handleLocationSuccess(position) {
+            const locationStatus = document.getElementById('locationStatus');
+            const locationText = document.getElementById('locationText');
+            const accuracyInfo = document.getElementById('accuracyInfo');
+            const markBtn = document.getElementById('markAttendanceBtn');
+            const retryBtn = document.getElementById('retryBtn');
+            
+            const userLat = position.coords.latitude;
+            const userLng = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+            
+            const distance = calculateDistance(
+                userLat, 
+                userLng, 
+                COLLEGE_LOCATION.latitude, 
+                COLLEGE_LOCATION.longitude
+            );
+            
+            // Show accuracy information
+            accuracyInfo.textContent = `GPS Accuracy: ±${Math.round(accuracy)} meters | Distance: ${distance.toFixed(0)} meters from college`;
+            
+            if (distance <= ALLOWED_RADIUS) {
+                locationText.innerHTML = '✅ You are within college premises.';
+                locationStatus.className = 'location-status location-allowed';
+                markBtn.disabled = false;
+                
+                // Additional accuracy check
+                if (accuracy > 50) {
+                    accuracyInfo.innerHTML += '<br>⚠️ Low GPS accuracy. Move to open area for better precision.';
+                }
+            } else {
+                locationText.innerHTML = `❌ You are ${distance.toFixed(0)} meters away from college.`;
+                locationStatus.className = 'location-status location-denied';
+                markBtn.disabled = true;
+                
+                if (accuracy > 100) {
+                    accuracyInfo.innerHTML += '<br>📍 GPS accuracy is low. Your actual location might be closer.';
+                }
+            }
+            
+            retryBtn.style.display = 'inline-block';
+        }
+
+        function handleLocationError(error) {
+            const locationText = document.getElementById('locationText');
+            const accuracyInfo = document.getElementById('accuracyInfo');
+            const retryBtn = document.getElementById('retryBtn');
+            
+            let errorMessage = '❌ Unable to get your location. ';
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage += 'Location access was denied. Please allow location permissions in your browser settings.';
+                    accuracyInfo.textContent = 'Go to browser settings → Site permissions → Location → Allow';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage += 'Location information is unavailable.';
+                    accuracyInfo.textContent = 'Check if your device has GPS/Location services enabled';
+                    break;
+                case error.TIMEOUT:
+                    errorMessage += 'Location request timed out.';
+                    accuracyInfo.textContent = 'Please try again in better network conditions';
+                    break;
+                default:
+                    errorMessage += 'An unknown error occurred.';
+                    accuracyInfo.textContent = 'Please refresh the page and try again';
+                    break;
+            }
+            
+            locationText.innerHTML = errorMessage;
+            document.getElementById('locationStatus').className = 'location-status location-denied';
+            retryBtn.style.display = 'inline-block';
+        }
+
+        // Calculate distance between two coordinates using Haversine formula
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371000; // Earth's radius in meters
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            const distance = R * c;
+            return distance;
+        }
+
+        // Show Student Dashboard
+        function showStudentDashboard() {
+            document.getElementById('pageHeader').classList.remove('admin-header');
+            document.getElementById('headerTitle').textContent = 'Student Dashboard';
+            document.getElementById('headerSubtitle').textContent = 'College Attendance System';
+            document.getElementById('userRole').textContent = '👤 Student Account';
+            
+            document.getElementById('studentSection').style.display = 'block';
+            document.getElementById('adminSection').style.display = 'none';
+        }
+
+        // Show Admin Dashboard
+        function showAdminDashboard() {
+            document.getElementById('pageHeader').classList.add('admin-header');
+            document.getElementById('headerTitle').textContent = 'Admin Dashboard';
+            document.getElementById('headerSubtitle').textContent = 'College Management System';
+            document.getElementById('userRole').textContent = '👑 Administrator Account';
+            
+            document.getElementById('studentSection').style.display = 'none';
+            document.getElementById('adminSection').style.display = 'block';
+        }
+
+        // Load Student Data
+        async function loadStudentData() {
             // Display basic user info
             document.getElementById('userEmail').textContent = currentUser.email;
             document.getElementById('userId').textContent = currentUser.uid || 'N/A';
@@ -477,9 +828,88 @@
 
             // Calculate and display monthly statistics
             await calculateMonthlyStats();
-        });
+        }
 
-        // Load user data from Firestore
+        // Load Admin Data
+        async function loadAdminData() {
+            try {
+                // Load all users
+                const usersQuery = await db.collection('users').get();
+                allUsers = [];
+                usersQuery.forEach(doc => {
+                    allUsers.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                // Load all attendance
+                const attendanceQuery = await db.collection('attendance').get();
+                allAttendance = [];
+                attendanceQuery.forEach(doc => {
+                    allAttendance.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                // Update admin statistics
+                updateAdminStatistics();
+                displayAdminStudentsList();
+                
+            } catch (error) {
+                console.error('Error loading admin data:', error);
+            }
+        }
+
+        // Update Admin Statistics
+        function updateAdminStatistics() {
+            const totalStudents = allUsers.filter(user => !user.isAdmin).length;
+            const totalAttendance = allAttendance.length;
+            const today = new Date().toISOString().split('T')[0];
+            const todayAttendance = allAttendance.filter(record => record.date === today).length;
+            const activeUsers = allUsers.length;
+
+            document.getElementById('totalStudents').textContent = totalStudents;
+            document.getElementById('totalAttendance').textContent = totalAttendance;
+            document.getElementById('todayAttendanceCount').textContent = todayAttendance;
+            document.getElementById('activeUsers').textContent = activeUsers;
+        }
+
+        // Display Admin Students List
+        function displayAdminStudentsList() {
+            const container = document.getElementById('adminStudentsList');
+            const students = allUsers.filter(user => !user.isAdmin);
+            
+            let html = '<h3>Recent Students</h3>';
+            
+            students.slice(0, 5).forEach(student => {
+                const studentAttendance = allAttendance.filter(record => record.userId === student.id);
+                const today = new Date().toISOString().split('T')[0];
+                const presentToday = studentAttendance.some(record => record.date === today);
+                
+                html += `
+                    <div class="student-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: bold;">${student.fullName || 'Unknown'}</div>
+                                <div style="color: #666; font-size: 14px;">${student.email}</div>
+                            </div>
+                            <div style="color: ${presentToday ? '#10b981' : '#ef4444'}; font-weight: bold;">
+                                ${presentToday ? '✅ Present' : '❌ Absent'}
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px; font-size: 14px; color: #666;">
+                            Total Records: ${studentAttendance.length} | Phone: ${student.phone || 'N/A'}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Student Functions
         async function loadUserData() {
             try {
                 const userDoc = await db.collection('users').doc(currentUser.uid).get();
@@ -493,7 +923,6 @@
             }
         }
 
-        // Load all attendance records
         async function loadAllAttendanceRecords() {
             try {
                 const attendanceQuery = await db.collection('attendance')
@@ -508,71 +937,101 @@
                     });
                 });
 
-                // Sort by date descending
-                allAttendanceRecords.sort((a, b) => {
-                    const dateA = new Date(a.date);
-                    const dateB = new Date(b.date);
-                    return dateB - dateA;
-                });
-
-                console.log('Loaded records:', allAttendanceRecords.length);
+                allAttendanceRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
                 
             } catch (error) {
                 console.error('Error loading attendance records:', error);
             }
         }
 
-        // Mark Attendance Function
         async function markAttendance() {
             const btn = document.getElementById('markAttendanceBtn');
             const statusDiv = document.getElementById('attendanceStatus');
             
-            btn.innerHTML = '<span class="loading"></span> Marking Attendance...';
+            btn.innerHTML = '<span class="loading"></span> Verifying Location...';
             btn.disabled = true;
-            statusDiv.textContent = 'Recording your attendance...';
             
             try {
-                const now = new Date();
-                const attendanceData = {
-                    userId: currentUser.uid,
-                    email: currentUser.email,
-                    fullName: userData?.fullName || 'Unknown',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    date: now.toISOString().split('T')[0],
-                    time: now.toLocaleTimeString('en-IN', { 
-                        hour: '2-digit', 
-                        minute: '2-digit',
-                        second: '2-digit',
-                        hour12: true 
-                    }),
-                    day: now.toLocaleDateString('en-IN', { weekday: 'long' }),
-                    month: now.toLocaleDateString('en-IN', { month: 'long' }),
-                    year: now.getFullYear(),
-                    status: 'present'
-                };
+                // Get current location again to confirm with high accuracy
+                navigator.geolocation.getCurrentPosition(
+                    async function(position) {
+                        const userLat = position.coords.latitude;
+                        const userLng = position.coords.longitude;
+                        const accuracy = position.coords.accuracy;
+                        
+                        const distance = calculateDistance(
+                            userLat, 
+                            userLng, 
+                            COLLEGE_LOCATION.latitude, 
+                            COLLEGE_LOCATION.longitude
+                        );
+                        
+                        if (distance > ALLOWED_RADIUS) {
+                            statusDiv.innerHTML = `<span style="color: red;">❌ You are ${distance.toFixed(0)} meters away from college. Attendance not allowed.</span>`;
+                            btn.innerHTML = 'Mark Today\'s Attendance';
+                            checkLocation(); // Update location status
+                            return;
+                        }
 
-                await db.collection('attendance').add(attendanceData);
-                await loadAllAttendanceRecords();
-                
-                statusDiv.innerHTML = '<span style="color: green;">✅ Attendance marked successfully!</span>';
-                btn.style.display = 'none';
-                
-                document.getElementById('attendanceTime').textContent = attendanceData.time;
-                document.getElementById('attendanceDate').textContent = 
-                    `${attendanceData.day}, ${attendanceData.date}`;
-                document.getElementById('todayAttendance').style.display = 'block';
-                
-                await calculateMonthlyStats();
+                        // Additional accuracy check
+                        if (accuracy > 50) {
+                            statusDiv.innerHTML = '<span style="color: orange;">⚠️ Low GPS accuracy. Moving to open area might help.</span>';
+                        }
+
+                        // Proceed with attendance marking
+                        btn.innerHTML = '<span class="loading"></span> Marking Attendance...';
+                        
+                        const now = new Date();
+                        const attendanceData = {
+                            userId: currentUser.uid,
+                            email: currentUser.email,
+                            fullName: userData?.fullName || 'Unknown',
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                            date: now.toISOString().split('T')[0],
+                            time: now.toLocaleTimeString(),
+                            day: now.toLocaleDateString('en-IN', { weekday: 'long' }),
+                            status: 'present',
+                            location: {
+                                latitude: userLat,
+                                longitude: userLng,
+                                distance: distance,
+                                accuracy: accuracy
+                            }
+                        };
+
+                        await db.collection('attendance').add(attendanceData);
+                        await loadAllAttendanceRecords();
+                        
+                        statusDiv.innerHTML = '<span style="color: green;">✅ Attendance marked successfully!</span>';
+                        btn.style.display = 'none';
+                        
+                        document.getElementById('attendanceTime').textContent = attendanceData.time;
+                        document.getElementById('attendanceDate').textContent = `${attendanceData.day}, ${attendanceData.date}`;
+                        document.getElementById('todayAttendance').style.display = 'block';
+                        
+                        await calculateMonthlyStats();
+                    },
+                    function(error) {
+                        console.error('Error getting location:', error);
+                        statusDiv.innerHTML = '<span style="color: red;">❌ Unable to verify location. Attendance not marked.</span>';
+                        btn.innerHTML = 'Mark Today\'s Attendance';
+                        btn.disabled = true;
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
                 
             } catch (error) {
                 console.error('Error marking attendance:', error);
-                statusDiv.innerHTML = '<span style="color: red;">❌ Error marking attendance. Please try again.</span>';
+                statusDiv.innerHTML = '<span style="color: red;">❌ Error marking attendance.</span>';
                 btn.innerHTML = 'Mark Today\'s Attendance';
                 btn.disabled = false;
             }
         }
 
-        // Check if attendance already marked today
         async function checkTodaysAttendance() {
             try {
                 const today = new Date().toISOString().split('T')[0];
@@ -581,38 +1040,32 @@
                 if (todayRecord) {
                     document.getElementById('markAttendanceBtn').style.display = 'none';
                     document.getElementById('attendanceTime').textContent = todayRecord.time;
-                    document.getElementById('attendanceDate').textContent = 
-                        `${todayRecord.day}, ${todayRecord.date}`;
+                    document.getElementById('attendanceDate').textContent = `${todayRecord.day}, ${todayRecord.date}`;
                     document.getElementById('todayAttendance').style.display = 'block';
-                    document.getElementById('attendanceStatus').innerHTML = 
-                        '<span style="color: green;">✅ Attendance already marked for today</span>';
+                    document.getElementById('attendanceStatus').innerHTML = '<span style="color: green;">✅ Attendance already marked for today</span>';
                 }
             } catch (error) {
                 console.error('Error checking attendance:', error);
             }
         }
 
-        // Calculate Monthly Statistics (FIXED - Running Month)
         async function calculateMonthlyStats() {
             try {
                 const now = new Date();
                 const currentMonth = now.getMonth();
                 const currentYear = now.getFullYear();
                 
-                // Get current month's records
                 const monthRecords = allAttendanceRecords.filter(record => {
                     const recordDate = new Date(record.date);
-                    return recordDate.getMonth() === currentMonth && 
-                           recordDate.getFullYear() === currentYear;
+                    return recordDate.getMonth() === currentMonth && recordDate.getFullYear() === currentYear;
                 });
                 
-                // Calculate working days in current month (excluding weekends)
                 const firstDay = new Date(currentYear, currentMonth, 1);
                 const lastDay = new Date(currentYear, currentMonth + 1, 0);
                 let workingDays = 0;
                 
                 for (let day = new Date(firstDay); day <= lastDay; day.setDate(day.getDate() + 1)) {
-                    if (day.getDay() !== 0 && day.getDay() !== 6) { // Exclude Sunday (0) and Saturday (6)
+                    if (day.getDay() !== 0 && day.getDay() !== 6) {
                         workingDays++;
                     }
                 }
@@ -621,13 +1074,11 @@
                 const absentDays = Math.max(0, workingDays - presentDays);
                 const percentage = workingDays > 0 ? ((presentDays / workingDays) * 100).toFixed(1) : 0;
                 
-                // Update display
                 document.getElementById('monthWorkingDays').textContent = workingDays;
                 document.getElementById('monthPresent').textContent = presentDays;
                 document.getElementById('monthAbsent').textContent = absentDays;
                 document.getElementById('monthPercentage').textContent = percentage + '%';
                 
-                // Generate calendar view
                 generateCalendarView(currentMonth, currentYear, monthRecords);
                 
             } catch (error) {
@@ -635,7 +1086,6 @@
             }
         }
 
-        // Generate Calendar View
         function generateCalendarView(month, year, records) {
             const calendarDiv = document.getElementById('monthCalendar');
             const firstDay = new Date(year, month, 1);
@@ -644,24 +1094,20 @@
             
             let calendarHTML = '<div class="calendar">';
             
-            // Add day headers
             const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             days.forEach(day => {
                 calendarHTML += `<div class="calendar-day calendar-day-header">${day}</div>`;
             });
             
-            // Add empty cells for days before the first day of month
             for (let i = 0; i < firstDay.getDay(); i++) {
                 calendarHTML += '<div class="calendar-day"></div>';
             }
             
-            // Add days of the month
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
                 const isPresent = records.some(record => record.date === dateStr);
                 const isToday = dateStr === new Date().toISOString().split('T')[0];
-                const isWeekend = new Date(year, month, day).getDay() === 0 || 
-                                 new Date(year, month, day).getDay() === 6;
+                const isWeekend = new Date(year, month, day).getDay() === 0 || new Date(year, month, day).getDay() === 6;
                 
                 let dayClass = 'calendar-day';
                 if (isPresent) dayClass += ' present';
@@ -674,8 +1120,40 @@
             calendarDiv.innerHTML = calendarHTML;
         }
 
-        // View Profile Function
-        async function viewProfile() {
+        // Admin Functions
+        function viewAllStudents() {
+            const modal = document.getElementById('allStudentsModal');
+            modal.style.display = 'block';
+            
+            const students = allUsers.filter(user => !user.isAdmin);
+            let html = '';
+            
+            students.forEach(student => {
+                const studentAttendance = allAttendance.filter(record => record.userId === student.id);
+                html += `
+                    <div class="student-card">
+                        <div style="font-weight: bold;">${student.fullName || 'Unknown'}</div>
+                        <div style="color: #666;">${student.email} | Phone: ${student.phone || 'N/A'}</div>
+                        <div style="margin-top: 8px; font-size: 14px;">
+                            Total Attendance: ${studentAttendance.length} records
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('allStudentsData').innerHTML = html;
+        }
+
+        function viewAttendanceReport() {
+            alert('Attendance report would be shown here with charts and analytics.');
+        }
+
+        function viewSystemStats() {
+            alert('System statistics would be shown here.');
+        }
+
+        // Common Functions
+        function viewProfile() {
             const modal = document.getElementById('profileModal');
             const profileInfo = document.getElementById('profileInfo');
             
@@ -686,20 +1164,16 @@
                     <p><strong>Phone:</strong> ${userData?.phone || 'Not set'}</p>
                     <p><strong>User ID:</strong> ${currentUser.uid}</p>
                     <p><strong>Total Attendance Records:</strong> ${allAttendanceRecords.length}</p>
-                    <p><strong>Member Since:</strong> ${userData?.createdAt ? 
-                        new Date(userData.createdAt.seconds * 1000).toLocaleDateString() : 'Unknown'}</p>
                 </div>
             `;
             
             modal.style.display = 'block';
         }
 
-        // View Attendance Records
         async function viewAttendanceRecords() {
             const modal = document.getElementById('recordsModal');
             const recordsDiv = document.getElementById('attendanceRecords');
             
-            recordsDiv.innerHTML = '<p>Loading attendance records...</p>';
             modal.style.display = 'block';
             
             try {
@@ -712,7 +1186,7 @@
                 
                 allAttendanceRecords.forEach(record => {
                     recordsHTML += `
-                        <div class="attendance-record">
+                        <div class="student-card">
                             <p><strong>Date:</strong> ${record.day}, ${record.date}</p>
                             <p><strong>Time:</strong> ${record.time}</p>
                             <p><strong>Status:</strong> <span style="color: green;">PRESENT</span></p>
@@ -729,162 +1203,77 @@
             }
         }
 
-        // View Detailed Statistics with Charts
-        async function viewDetailedStats() {
+        function viewDetailedStats() {
             const modal = document.getElementById('statsModal');
-            const statsDiv = document.getElementById('attendanceStats');
-            
-            statsDiv.innerHTML = '<p>Loading statistics...</p>';
             modal.style.display = 'block';
             
-            try {
-                // Monthly data for chart
-                const monthlyData = {};
-                allAttendanceRecords.forEach(record => {
-                    const date = new Date(record.date);
-                    const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                    
-                    if (!monthlyData[monthYear]) {
-                        monthlyData[monthYear] = 0;
-                    }
-                    monthlyData[monthYear]++;
-                });
+            // Create chart for detailed statistics
+            createAttendanceChart();
+        }
+
+        function createAttendanceChart() {
+            const ctx = document.getElementById('attendanceChart').getContext('2d');
+            
+            // Destroy previous chart if exists
+            if (attendanceChart) {
+                attendanceChart.destroy();
+            }
+            
+            // Prepare data for chart
+            const monthlyData = {};
+            allAttendanceRecords.forEach(record => {
+                const date = new Date(record.date);
+                const monthYear = `${date.toLocaleString('default', { month: 'short' })} ${date.getFullYear()}`;
                 
-                // Prepare chart data
-                const labels = Object.keys(monthlyData).sort();
-                const data = labels.map(label => monthlyData[label]);
-                
-                statsDiv.innerHTML = `
-                    <div style="text-align: center;">
-                        <h3>Monthly Attendance Trend</h3>
-                        <canvas id="attendanceChart" width="400" height="200"></canvas>
-                        <div style="margin-top: 20px;">
-                            <p><strong>Total Records:</strong> ${allAttendanceRecords.length}</p>
-                            <p><strong>First Record:</strong> ${allAttendanceRecords.length > 0 ? 
-                                new Date(allAttendanceRecords[allAttendanceRecords.length-1].date).toLocaleDateString() : 'N/A'}</p>
-                        </div>
-                    </div>
-                `;
-                
-                // Create chart
-                const ctx = document.getElementById('attendanceChart').getContext('2d');
-                if (attendanceChart) {
-                    attendanceChart.destroy();
+                if (!monthlyData[monthYear]) {
+                    monthlyData[monthYear] = 0;
                 }
-                
-                attendanceChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Attendance Days',
-                            data: data,
-                            backgroundColor: 'rgba(16, 185, 129, 0.6)',
-                            borderColor: 'rgba(16, 185, 129, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Days Present'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Month-Year'
-                                }
+                monthlyData[monthYear]++;
+            });
+            
+            const labels = Object.keys(monthlyData);
+            const data = Object.values(monthlyData);
+            
+            attendanceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Attendance Days',
+                        data: data,
+                        backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                        borderColor: 'rgba(16, 185, 129, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Days Present'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Month'
                             }
                         }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Monthly Attendance Trend'
+                        }
                     }
-                });
-                
-            } catch (error) {
-                console.error('Error loading statistics:', error);
-                statsDiv.innerHTML = '<p style="color: red;">Error loading statistics.</p>';
-            }
+                }
+            });
         }
 
-        // Admin Panel Functions
-        async function openAdminPanel() {
-            const modal = document.getElementById('adminModal');
-            modal.style.display = 'block';
-            await loadAllStudents();
-        }
-
-        async function loadAllStudents() {
-            try {
-                const studentsDiv = document.getElementById('allStudentsData');
-                studentsDiv.innerHTML = '<p>Loading all students data...</p>';
-                
-                // Get all users
-                const usersQuery = await db.collection('users').get();
-                const allUsers = [];
-                
-                usersQuery.forEach(doc => {
-                    allUsers.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-                
-                // Get attendance for all users
-                const attendanceQuery = await db.collection('attendance').get();
-                const attendanceMap = {};
-                
-                attendanceQuery.forEach(doc => {
-                    const record = doc.data();
-                    if (!attendanceMap[record.userId]) {
-                        attendanceMap[record.userId] = [];
-                    }
-                    attendanceMap[record.userId].push(record);
-                });
-                
-                let adminHTML = '<div style="display: grid; gap: 15px;">';
-                
-                allUsers.forEach(user => {
-                    const userAttendance = attendanceMap[user.id] || [];
-                    const thisMonth = new Date().getMonth();
-                    const thisYear = new Date().getFullYear();
-                    
-                    const monthRecords = userAttendance.filter(record => {
-                        const recordDate = new Date(record.date);
-                        return recordDate.getMonth() === thisMonth && 
-                               recordDate.getFullYear() === thisYear;
-                    });
-                    
-                    adminHTML += `
-                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                            <h4>${user.fullName || 'Unknown'} (${user.email})</h4>
-                            <p><strong>Phone:</strong> ${user.phone || 'N/A'} | 
-                            <strong>Total Attendance:</strong> ${userAttendance.length} records</p>
-                            <p><strong>This Month:</strong> ${monthRecords.length} days present</p>
-                            <button onclick="viewStudentDetails('${user.id}')" class="admin-btn">View Details</button>
-                        </div>
-                    `;
-                });
-                
-                adminHTML += '</div>';
-                studentsDiv.innerHTML = adminHTML;
-                
-            } catch (error) {
-                console.error('Error loading admin data:', error);
-                document.getElementById('allStudentsData').innerHTML = 
-                    '<p style="color: red;">Error loading admin data.</p>';
-            }
-        }
-
-        function viewStudentDetails(userId) {
-            alert(`Student details view for user: ${userId}\nThis would open a detailed view in a real application.`);
-            // In a real app, this would show detailed student analytics
-        }
-
-        // Modal functions
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
@@ -898,7 +1287,6 @@
             }
         }
 
-        // Logout function
         function logout() {
             localStorage.removeItem('currentUser');
             if (auth) {
@@ -906,6 +1294,32 @@
             }
             window.location.href = 'index.html?logout=true';
         }
+
+        // Search functionality for admin
+        document.getElementById('searchStudent').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const students = allUsers.filter(user => !user.isAdmin);
+            const filteredStudents = students.filter(student => 
+                student.fullName?.toLowerCase().includes(searchTerm) || 
+                student.email?.toLowerCase().includes(searchTerm)
+            );
+            
+            let html = '';
+            filteredStudents.forEach(student => {
+                const studentAttendance = allAttendance.filter(record => record.userId === student.id);
+                html += `
+                    <div class="student-card">
+                        <div style="font-weight: bold;">${student.fullName || 'Unknown'}</div>
+                        <div style="color: #666;">${student.email} | Phone: ${student.phone || 'N/A'}</div>
+                        <div style="margin-top: 8px; font-size: 14px;">
+                            Total Attendance: ${studentAttendance.length} records
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('allStudentsData').innerHTML = html;
+        });
     </script>
 </body>
 </html>
